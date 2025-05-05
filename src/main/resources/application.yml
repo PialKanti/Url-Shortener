@@ -1,3 +1,18 @@
 spring:
   application:
     name: url-shortener
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:5432/url_shortener_db?createDatabaseIfNotExist=true
+
