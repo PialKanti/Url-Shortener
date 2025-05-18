@@ -14,5 +14,5 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: admin
     password: admin
-    url: jdbc:postgresql://localhost:5432/url_shortener_db?createDatabaseIfNotExist=true
+    url: jdbc:postgresql://url_shortener_db:5432/url_shortener_db?createDatabaseIfNotExist=true
 
