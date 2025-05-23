@@ -12,3 +12,12 @@ spring:
     password: admin
     url: jdbc:postgresql://url_shortener_db:5432/url_shortener_db?createDatabaseIfNotExist=true
 
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 6
+      idle-timeout: 30000
+      connection-timeout: 3000
+      max-lifetime: 1800000
+
+
+
