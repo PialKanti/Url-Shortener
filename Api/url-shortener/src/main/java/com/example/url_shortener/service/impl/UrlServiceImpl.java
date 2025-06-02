@@ -22,14 +22,12 @@ public class UrlServiceImpl implements UrlService {
     @Override
     @Trace
     public Url create(UrlCreateRequest urlCreateRequest) throws ExecutionException, InterruptedException {
-        try(ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            Future<String> encodedUrlFuture = executor.submit(() -> encode(DateUtil.getCurrentTimestamp()));
+        Url urlToBeShortened = Url.builder()
+                .longUrl(urlCreateRequest.longUrl())
+                .shortUrl(encode(DateUtil.getCurrentTimestamp()))
+                .build();
 
-            Url urlToBeShortened = Url.builder()
-                    .longUrl(urlCreateRequest.longUrl())
-                    .shortUrl(encodedUrlFuture.get())
-                    .build();
-
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
             Future<Url> urlFuture = executor.submit(() -> urlRepository.save(urlToBeShortened));
             return urlFuture.get();
         }
