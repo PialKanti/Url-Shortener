@@ -11,4 +11,8 @@ FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 EXPOSE 8080
 COPY --from=builder /app/target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=builder /app/src/main/resources/newrelic /src/resources/newrelic
+COPY --from=builder /app/src/main/resources/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

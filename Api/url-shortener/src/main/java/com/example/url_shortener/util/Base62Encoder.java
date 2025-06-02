@@ -1,11 +1,13 @@
 package com.example.url_shortener.util;
 
+import com.newrelic.api.agent.Trace;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Base62Encoder {
     private static final char[] encodingCharSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
+    @Trace
     public static String encode(long number){
         if (number == 0) {
             return String.valueOf(encodingCharSet[0]);
