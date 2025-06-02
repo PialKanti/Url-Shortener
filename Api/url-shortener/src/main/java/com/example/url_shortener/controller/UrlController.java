@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("api/v1/urls")
@@ -18,8 +18,8 @@ public class UrlController {
 
     @PostMapping
     @Trace(dispatcher = true)
-    public CompletableFuture<ResponseEntity<Url>> create(@RequestBody UrlCreateRequest createRequest){
-        return urlService.create(createRequest).thenApply(ResponseEntity::ok);
+    public ResponseEntity<Url> create(@RequestBody UrlCreateRequest createRequest) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(urlService.create(createRequest));
     }
 
     @GetMapping("/{shortUrl}")

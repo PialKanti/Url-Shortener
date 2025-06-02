@@ -10,7 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 import static com.example.url_shortener.util.Base62Encoder.encode;
 
@@ -21,15 +21,18 @@ public class UrlServiceImpl implements UrlService {
 
     @Override
     @Trace
-    public CompletableFuture<Url> create(UrlCreateRequest urlCreateRequest) {
-        return CompletableFuture.supplyAsync(() -> {
+    public Url create(UrlCreateRequest urlCreateRequest) throws ExecutionException, InterruptedException {
+        try(ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            Future<String> encodedUrlFuture = executor.submit(() -> encode(DateUtil.getCurrentTimestamp()));
+
             Url urlToBeShortened = Url.builder()
                     .longUrl(urlCreateRequest.longUrl())
-                    .shortUrl(encode(DateUtil.getCurrentTimestamp()))
+                    .shortUrl(encodedUrlFuture.get())
                     .build();
 
-            return urlRepository.save(urlToBeShortened);
-        });
+            Future<Url> urlFuture = executor.submit(() -> urlRepository.save(urlToBeShortened));
+            return urlFuture.get();
+        }
     }
 
     @Override
